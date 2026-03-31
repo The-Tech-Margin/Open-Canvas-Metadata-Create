@@ -1,14 +1,14 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Stage, Layer } from 'react-konva';
+import Konva from 'konva';
 import { DEFAULT_TOKENS } from '../theme/tokens';
 import { darkTheme } from '../theme/presets/dark';
 import { fourCornersTheme } from '../theme/presets/fourCorners';
-import { ShapeRenderer } from '../react/ShapeRenderer';
 import { mapFourCornersToShapes } from '../test-data/mapFourCornersToShapes';
 import { rockawayBeachFixture } from '../test-data/rockaway-beach-fixture';
 import type { BaseShape } from '../shapes/BaseShape';
-import type { CanvasMode, ThemeTokens, CameraState } from '../core/types';
+import type { CanvasMode, ThemeTokens, CameraState, CanvasRenderContext } from '../core/types';
 import './styles.css';
 
 // ---------------------------------------------------------------------------
@@ -32,6 +32,57 @@ const VIEWPORTS = {
 } as const;
 
 type ViewportKey = keyof typeof VIEWPORTS;
+
+// ---------------------------------------------------------------------------
+// Imperative shape layer — renders Konva nodes directly
+// ---------------------------------------------------------------------------
+
+function ShapeLayer({
+  shapes,
+  theme,
+  mode,
+  camera,
+  selectedId,
+  onShapeClick,
+}: {
+  shapes: BaseShape[];
+  theme: ThemeTokens;
+  mode: CanvasMode;
+  camera: CameraState;
+  selectedId: string | null;
+  onShapeClick: (id: string) => void;
+}) {
+  const layerRef = useRef<Konva.Layer>(null);
+
+  useEffect(() => {
+    const layer = layerRef.current;
+    if (!layer) return;
+
+    // Clear previous nodes
+    layer.destroyChildren();
+
+    // Render each shape imperatively
+    for (const shape of shapes) {
+      const ctx: CanvasRenderContext = {
+        theme,
+        mode,
+        camera,
+        selected: shape.id === selectedId,
+      };
+
+      const node = shape.render(ctx);
+      if (node) {
+        // Add click handler for selection
+        node.on('click tap', () => onShapeClick(shape.id));
+        layer.add(node);
+      }
+    }
+
+    layer.batchDraw();
+  }, [shapes, theme, mode, camera, selectedId, onShapeClick]);
+
+  return <Layer ref={layerRef} />;
+}
 
 // ---------------------------------------------------------------------------
 // App
@@ -73,6 +124,36 @@ function App() {
   const resetCamera = useCallback(() => {
     setCamera({ x: 0, y: 0, zoom: 1 });
   }, []);
+
+  // Fit-to-content: calculate zoom to show all shapes
+  const fitToContent = useCallback(() => {
+    if (shapes.length === 0) return;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const s of shapes) {
+      minX = Math.min(minX, s.x);
+      minY = Math.min(minY, s.y);
+      maxX = Math.max(maxX, s.x + s.width);
+      maxY = Math.max(maxY, s.y + s.height);
+    }
+    const contentW = maxX - minX;
+    const contentH = maxY - minY;
+    const padding = 40;
+    const zoom = Math.min(
+      (vp.width - padding * 2) / contentW,
+      (vp.height - padding * 2) / contentH,
+      2,
+    );
+    setCamera({
+      x: -minX * zoom + padding,
+      y: -minY * zoom + padding,
+      zoom,
+    });
+  }, [shapes, vp]);
+
+  // Auto-fit on first render and viewport change
+  useEffect(() => {
+    fitToContent();
+  }, [fitToContent]);
 
   return (
     <div className={`preview-root theme-${themeName}`} style={{ background: theme.canvasBg }}>
@@ -121,6 +202,7 @@ function App() {
           <span className="toolbar-label">Zoom {Math.round(camera.zoom * 100)}%</span>
           <button className="toolbar-btn" onClick={() => setCamera((c) => ({ ...c, zoom: Math.min(5, c.zoom * 1.2) }))}>+</button>
           <button className="toolbar-btn" onClick={() => setCamera((c) => ({ ...c, zoom: Math.max(0.1, c.zoom / 1.2) }))}>-</button>
+          <button className="toolbar-btn" onClick={fitToContent}>Fit</button>
           <button className="toolbar-btn" onClick={resetCamera}>Reset</button>
         </div>
       </header>
@@ -143,7 +225,7 @@ function App() {
             scaleY={camera.zoom}
             x={camera.x}
             y={camera.y}
-            draggable={mode !== 'edit'}
+            draggable
             onWheel={handleWheel}
             onClick={handleStageClick}
             onTap={handleStageClick}
@@ -154,19 +236,14 @@ function App() {
               }
             }}
           >
-            <Layer>
-              {shapes.map((shape: BaseShape) => (
-                <ShapeRendererWithClick
-                  key={shape.id}
-                  shape={shape}
-                  theme={theme}
-                  mode={mode}
-                  camera={camera}
-                  selected={selectedId === shape.id}
-                  onClick={() => handleShapeClick(shape.id)}
-                />
-              ))}
-            </Layer>
+            <ShapeLayer
+              shapes={shapes}
+              theme={theme}
+              mode={mode}
+              camera={camera}
+              selectedId={selectedId}
+              onShapeClick={handleShapeClick}
+            />
           </Stage>
         </div>
       </main>
@@ -183,11 +260,7 @@ function App() {
             >
               <span className="shape-type">{shape.type}</span>
               <span className="shape-label">
-                {(shape.data as Record<string, unknown>).label as string ??
-                  (shape.data as Record<string, unknown>).title as string ??
-                  (shape.data as Record<string, unknown>).caption as string ??
-                  truncate((shape.data as Record<string, unknown>).content as string, 40) ??
-                  shape.id.slice(0, 8)}
+                {shapeDisplayName(shape)}
               </span>
             </li>
           ))}
@@ -204,32 +277,6 @@ function App() {
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
-
-function ShapeRendererWithClick({
-  shape,
-  theme,
-  mode,
-  camera,
-  selected,
-  onClick,
-}: {
-  shape: BaseShape;
-  theme: ThemeTokens;
-  mode: CanvasMode;
-  camera: CameraState;
-  selected: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <ShapeRenderer
-      shape={shape}
-      theme={theme}
-      mode={mode}
-      camera={camera}
-      selected={selected}
-    />
-  );
-}
 
 function SelectedShapeDetail({ shape }: { shape?: BaseShape }) {
   if (!shape) return null;
@@ -270,6 +317,17 @@ function SelectedShapeDetail({ shape }: { shape?: BaseShape }) {
         </>
       )}
     </div>
+  );
+}
+
+function shapeDisplayName(shape: BaseShape): string {
+  const d = shape.data as Record<string, unknown>;
+  return (
+    (d.label as string) ??
+    (d.title as string) ??
+    (d.caption as string) ??
+    truncate(d.content as string, 40) ??
+    shape.id.slice(0, 8)
   );
 }
 
