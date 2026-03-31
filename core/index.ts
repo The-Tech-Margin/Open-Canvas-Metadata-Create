@@ -4,6 +4,9 @@ export type { CanvasOptions } from "./Canvas";
 export { ShapeRegistry } from "./ShapeRegistry";
 export { SnapEngine } from "./SnapEngine";
 export type { SnapGuide } from "./SnapEngine";
+export { SelectionManager } from "./SelectionManager";
+export { HistoryStack } from "./HistoryStack";
+export type { Command } from "./HistoryStack";
 export type {
   Point,
   Size,
