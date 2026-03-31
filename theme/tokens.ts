@@ -72,6 +72,13 @@ export const DEFAULT_TOKENS: ThemeTokens = {
   shapeSelectedBorder: "#2563eb",
   shapeHoverBorder: "#93c5fd",
 
+  // Shape internals
+  shapePlaceholder: "#e2e8f0",
+  shapeSurface: "#ffffff",
+  badgeText: "#ffffff",
+  videoBg: "#1a1a2e",
+  overlayBg: "rgba(0,0,0,0.5)",
+
   // Typography
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',

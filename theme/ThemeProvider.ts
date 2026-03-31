@@ -67,6 +67,13 @@ export class ThemeProvider {
     style.setProperty('--ock-shape-selected-border', this.tokens.shapeSelectedBorder);
     style.setProperty('--ock-shape-hover-border', this.tokens.shapeHoverBorder);
 
+    // Shape internals
+    style.setProperty('--ock-shape-placeholder', this.tokens.shapePlaceholder);
+    style.setProperty('--ock-shape-surface', this.tokens.shapeSurface);
+    style.setProperty('--ock-badge-text', this.tokens.badgeText);
+    style.setProperty('--ock-video-bg', this.tokens.videoBg);
+    style.setProperty('--ock-overlay-bg', this.tokens.overlayBg);
+
     // Typography
     style.setProperty('--ock-font-family', this.tokens.fontFamily);
     style.setProperty('--ock-font-size-base', String(this.tokens.fontSizeBase));

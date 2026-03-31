@@ -6,7 +6,8 @@
       "Bash(npm outdated:*)",
       "Bash(npm audit:*)",
       "Bash(npm ls:*)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npx tsc:*)"
     ]
   }
 }
