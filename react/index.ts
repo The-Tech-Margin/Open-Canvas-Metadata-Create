@@ -14,3 +14,7 @@ export { useMode } from "./hooks/useMode";
 export type { UseModeReturn } from "./hooks/useMode";
 export { useBridge } from "./hooks/useBridge";
 export type { BridgeConfig, UseBridgeReturn } from "./hooks/useBridge";
+export { HtmlOverlay } from "./HtmlOverlay";
+export type { HtmlOverlayProps } from "./HtmlOverlay";
+export { Toolbar } from "./Toolbar";
+export type { ToolbarItem, ToolbarProps } from "./Toolbar";
