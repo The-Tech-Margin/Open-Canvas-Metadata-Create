@@ -5,7 +5,7 @@
  * registry to instantiate shapes from serialized data.
  */
 
-import type { ShapeCategory } from "./types";
+import type { ShapeCategory, ShapeJSON } from "./types";
 import { BaseShape } from "../shapes/BaseShape";
 
 /** Constructor type for BaseShape subclasses. */
@@ -98,6 +98,27 @@ export class ShapeRegistry {
     }
 
     return new ShapeClass(props as Partial<BaseShape>) as T;
+  }
+
+  /**
+   * Create a shape instance from a serialized ShapeJSON object.
+   * Instantiates the correct class from the registry and calls deserialize().
+   * @param json - The serialized shape data.
+   * @returns A fully hydrated shape instance.
+   * @throws If the shape type is not registered.
+   */
+  static fromJSON(json: ShapeJSON): BaseShape {
+    const ShapeClass = ShapeRegistry.registry.get(json.type);
+
+    if (!ShapeClass) {
+      throw new Error(
+        `ShapeRegistry: type "${json.type}" is not registered. Available types: ${[...ShapeRegistry.registry.keys()].join(", ")}`,
+      );
+    }
+
+    const instance = new ShapeClass();
+    instance.deserialize(json);
+    return instance;
   }
 
   /**

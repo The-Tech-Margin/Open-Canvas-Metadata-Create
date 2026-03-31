@@ -6,6 +6,7 @@
 
 import Konva from "konva";
 import type { CameraState, CanvasMode, Rect, ThemeTokens } from "./types";
+import type { BaseShape } from "../shapes/BaseShape";
 
 /** Options for constructing a Canvas instance. */
 export interface CanvasOptions {
@@ -177,10 +178,127 @@ export class Canvas {
     });
   }
 
+  /** Internal map of shape ID → Konva node for shape management. */
+  private shapeNodes: Map<string, Konva.Group> = new Map();
+
+  /** Internal map of shape ID → BaseShape instance. */
+  private shapeInstances: Map<string, BaseShape> = new Map();
+
+  /**
+   * Pan the camera to a specific position.
+   * @param x - Target x position.
+   * @param y - Target y position.
+   * @param _animated - Reserved for future animation support.
+   */
+  panTo(x: number, y: number, _animated?: boolean): void {
+    this.setCamera({ x, y });
+  }
+
+  /**
+   * Zoom the camera to a specific level.
+   * @param zoom - Target zoom level (clamped 0.1–5).
+   * @param center - Optional center point to zoom around.
+   * @param _animated - Reserved for future animation support.
+   */
+  zoomTo(
+    zoom: number,
+    center?: { x: number; y: number },
+    _animated?: boolean,
+  ): void {
+    const clampedZoom = Math.min(Math.max(zoom, 0.1), 5);
+    if (center) {
+      const mousePointTo = {
+        x: (center.x - this.camera.x) / this.camera.zoom,
+        y: (center.y - this.camera.y) / this.camera.zoom,
+      };
+      this.setCamera({
+        zoom: clampedZoom,
+        x: center.x - mousePointTo.x * clampedZoom,
+        y: center.y - mousePointTo.y * clampedZoom,
+      });
+    } else {
+      this.setCamera({ zoom: clampedZoom });
+    }
+  }
+
+  /**
+   * Pan and zoom to fit a specific rectangle within the viewport.
+   * @param rect - The target bounding rectangle.
+   * @param padding - Extra padding in pixels (default 40).
+   */
+  fitBounds(rect: Rect, padding = 40): void {
+    const stageW = this.stage.width();
+    const stageH = this.stage.height();
+    const zoom = Math.min(
+      (stageW - padding * 2) / rect.width,
+      (stageH - padding * 2) / rect.height,
+      5,
+    );
+    const cx = rect.x + rect.width / 2;
+    const cy = rect.y + rect.height / 2;
+    this.setCamera({
+      x: stageW / 2 - cx * zoom,
+      y: stageH / 2 - cy * zoom,
+      zoom,
+    });
+  }
+
+  /**
+   * Get the visible viewport bounds in canvas coordinates.
+   * Alias for getViewport().
+   * @returns The viewport rectangle.
+   */
+  getViewportBounds(): Rect {
+    return this.getViewport();
+  }
+
+  /**
+   * Add a shape to the canvas content layer.
+   * @param shape - The BaseShape instance to add.
+   */
+  addShape(shape: BaseShape): void {
+    this.shapeInstances.set(shape.id, shape);
+    // Render is handled by the React layer (ShapeRenderer).
+    // This tracks the shape for getShapes/removeShape.
+  }
+
+  /**
+   * Remove a shape from the canvas by ID.
+   * @param id - The shape ID to remove.
+   */
+  removeShape(id: string): void {
+    this.shapeInstances.delete(id);
+    const node = this.shapeNodes.get(id);
+    if (node) {
+      node.destroy();
+      this.shapeNodes.delete(id);
+      this.contentLayer.batchDraw();
+    }
+  }
+
+  /**
+   * Get all tracked shape instances.
+   * @returns Array of BaseShape instances.
+   */
+  getShapes(): BaseShape[] {
+    return [...this.shapeInstances.values()];
+  }
+
+  /**
+   * Export the canvas stage to a data URL (PNG by default).
+   * @param pixelRatio - Pixel ratio for the export (default 2).
+   * @returns A base64-encoded data URL string.
+   */
+  toDataURL(pixelRatio = 2): string {
+    return this.stage.toDataURL({ pixelRatio });
+  }
+
   /**
    * Destroy the stage and clean up resources.
    */
   destroy(): void {
+    this.shapeNodes.clear();
+    this.shapeInstances.clear();
     this.stage.destroy();
   }
 
