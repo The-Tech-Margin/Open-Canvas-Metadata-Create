@@ -34,6 +34,7 @@
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "preview": "vite --config preview/vite.config.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepublishOnly": "npm run build"
@@ -56,6 +57,7 @@
     "@testing-library/react": "~16.3.0",
     "@types/react": "~19.1.0",
     "@types/react-dom": "~19.1.0",
+    "@vitejs/plugin-react": "^4.7.0",
     "canvas": "~3.1.0",
     "eslint": "~9.27.0",
     "jsdom": "~26.1.0",
