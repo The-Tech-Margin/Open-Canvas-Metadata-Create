@@ -3,8 +3,8 @@
  * FPS tracking with automatic quality downgrade/upgrade.
  */
 
-import Konva from 'konva';
-import type { Canvas } from '../core/Canvas';
+import Konva from "konva";
+import type { Canvas } from "../core/Canvas";
 
 /**
  * Monitors frame rate and automatically toggles quality settings
@@ -58,7 +58,8 @@ export class PerformanceMonitor {
       if (delta > 0) {
         this.frameTimes.push(1000 / delta);
         if (this.frameTimes.length > 30) this.frameTimes.shift();
-        this.currentFps = this.frameTimes.reduce((a, b) => a + b, 0) / this.frameTimes.length;
+        this.currentFps =
+          this.frameTimes.reduce((a, b) => a + b, 0) / this.frameTimes.length;
       }
 
       this.evaluate(now);
@@ -115,7 +116,7 @@ export class PerformanceMonitor {
 
     // 1. Disable shadows
     this.canvas.contentLayer.children.forEach((node) => {
-      if (typeof node.shadowEnabled === 'function') {
+      if (node instanceof Konva.Shape) {
         node.shadowEnabled(false);
       }
     });
@@ -149,7 +150,7 @@ export class PerformanceMonitor {
 
     // Re-enable shadows
     this.canvas.contentLayer.children.forEach((node) => {
-      if (typeof node.shadowEnabled === 'function') {
+      if (node instanceof Konva.Shape) {
         node.shadowEnabled(true);
       }
     });

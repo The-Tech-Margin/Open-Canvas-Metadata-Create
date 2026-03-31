@@ -3,7 +3,7 @@
  * Video element utilities for syncing video playback with the Konva canvas.
  */
 
-import Konva from 'konva';
+import Konva from "konva";
 
 /**
  * Static utility class for creating and syncing video elements
@@ -16,9 +16,9 @@ export class VideoEngine {
    * @returns A configured HTMLVideoElement.
    */
   static createVideoElement(src: string): HTMLVideoElement {
-    const video = document.createElement('video');
-    video.crossOrigin = 'anonymous';
-    video.preload = 'metadata';
+    const video = document.createElement("video");
+    video.crossOrigin = "anonymous";
+    video.preload = "metadata";
     video.playsInline = true;
     video.src = src;
     return video;
@@ -30,38 +30,40 @@ export class VideoEngine {
    * @param video - The video element to capture from.
    * @returns A canvas element with the poster frame drawn.
    */
-  static async getPosterFrame(video: HTMLVideoElement): Promise<HTMLCanvasElement> {
+  static async getPosterFrame(
+    video: HTMLVideoElement,
+  ): Promise<HTMLCanvasElement> {
     return new Promise((resolve, reject) => {
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
 
       const onSeeked = () => {
         canvas.width = video.videoWidth || 320;
         canvas.height = video.videoHeight || 180;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
         if (ctx) {
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         }
-        video.removeEventListener('seeked', onSeeked);
+        video.removeEventListener("seeked", onSeeked);
         resolve(canvas);
       };
 
       const onError = () => {
-        video.removeEventListener('error', onError);
-        reject(new Error('Failed to get poster frame from video.'));
+        video.removeEventListener("error", onError);
+        reject(new Error("Failed to get poster frame from video."));
       };
 
-      video.addEventListener('seeked', onSeeked);
-      video.addEventListener('error', onError);
+      video.addEventListener("seeked", onSeeked);
+      video.addEventListener("error", onError);
 
       if (video.readyState >= 1) {
         video.currentTime = 0;
       } else {
         video.addEventListener(
-          'loadedmetadata',
+          "loadedmetadata",
           () => {
             video.currentTime = 0;
           },
-          { once: true }
+          { once: true },
         );
         video.load();
       }
@@ -78,8 +80,8 @@ export class VideoEngine {
    */
   static syncToCanvas(
     video: HTMLVideoElement,
-    konvaImage: Konva.Image,
-    layer: Konva.Layer
+    _konvaImage: Konva.Image,
+    layer: Konva.Layer,
   ): Konva.Animation {
     const anim = new Konva.Animation(() => {
       // Konva.Image re-renders automatically when the layer draws,
@@ -89,9 +91,9 @@ export class VideoEngine {
     const startSync = () => anim.start();
     const stopSync = () => anim.stop();
 
-    video.addEventListener('play', startSync);
-    video.addEventListener('pause', stopSync);
-    video.addEventListener('ended', stopSync);
+    video.addEventListener("play", startSync);
+    video.addEventListener("pause", stopSync);
+    video.addEventListener("ended", stopSync);
 
     // If the video is already playing, start immediately.
     if (!video.paused) {

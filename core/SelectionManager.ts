@@ -3,9 +3,8 @@
  * Single and multi-select management with Konva Transformer.
  */
 
-import Konva from 'konva';
-import type { Canvas } from './Canvas';
-import type { BaseShape } from '../shapes/BaseShape';
+import Konva from "konva";
+import type { Canvas } from "./Canvas";
 
 /**
  * Manages shape selection state and the Konva Transformer node

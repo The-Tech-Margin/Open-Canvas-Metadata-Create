@@ -4,9 +4,9 @@
  * The React layer renders the actual menu DOM; this class manages data.
  */
 
-import type { Canvas } from '../core/Canvas';
-import type { Point } from '../core/types';
-import type { BaseShape } from '../shapes/BaseShape';
+import type { Canvas } from "../core/Canvas";
+import type { Point } from "../core/types";
+import type { BaseShape } from "../shapes/BaseShape";
 
 /** A single item in a context menu. */
 export interface ContextMenuItem {
@@ -39,13 +39,12 @@ export class ContextMenu {
   /** Callback fired when menu state changes. */
   onChange?: () => void;
 
-  private _canvas: Canvas;
-
   /**
-   * @param canvas - The Canvas engine instance.
+   * @param _canvas - The Canvas engine instance (retained for future use).
    */
-  constructor(canvas: Canvas) {
-    this._canvas = canvas;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(_canvas: Canvas) {
+    // Canvas reference reserved for future context menu positioning
   }
 
   /**
@@ -77,20 +76,20 @@ export class ContextMenu {
   static shapeItems(shape: BaseShape): ContextMenuItem[] {
     return [
       {
-        label: 'Edit',
-        icon: 'edit',
+        label: "Edit",
+        icon: "edit",
         action: () => shape.onDoubleClick(),
       },
       {
-        label: shape.locked ? 'Unlock' : 'Lock',
-        icon: shape.locked ? 'unlock' : 'lock',
+        label: shape.locked ? "Unlock" : "Lock",
+        icon: shape.locked ? "unlock" : "lock",
         action: () => {
           shape.locked = !shape.locked;
         },
       },
       {
-        label: 'Delete',
-        icon: 'trash',
+        label: "Delete",
+        icon: "trash",
         action: () => {
           // Deletion is handled by the consuming code via the callback
         },
@@ -106,30 +105,30 @@ export class ContextMenu {
   static canvasItems(): ContextMenuItem[] {
     return [
       {
-        label: 'Add Shape',
-        icon: 'plus',
+        label: "Add Shape",
+        icon: "plus",
         action: () => {
           // Placeholder — consuming app wires this up
         },
       },
       {
-        label: 'Paste',
-        icon: 'clipboard',
+        label: "Paste",
+        icon: "clipboard",
         action: () => {
           // Placeholder
         },
       },
       {
-        label: 'Toggle Grid',
-        icon: 'grid',
+        label: "Toggle Grid",
+        icon: "grid",
         action: () => {
           // Placeholder
         },
         divider: true,
       },
       {
-        label: 'Reset View',
-        icon: 'maximize',
+        label: "Reset View",
+        icon: "maximize",
         action: () => {
           // Placeholder
         },

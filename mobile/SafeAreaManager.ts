@@ -3,21 +3,21 @@
  * iOS safe area inset detection and CSS variable injection.
  */
 
-import type { Rect } from '../core/types';
+import type { Rect } from "../core/types";
 
 /**
  * Reads iOS safe area environment variables and applies them
  * as CSS custom properties for toolbar and canvas positioning.
  */
 export class SafeAreaManager {
-  private container: HTMLElement;
   private probe: HTMLDivElement | null = null;
 
   /**
-   * @param container - The DOM element to read and apply safe area values on.
+   * @param _container - The DOM element associated with this manager.
    */
-  constructor(container: HTMLElement) {
-    this.container = container;
+  constructor(_container: HTMLElement) {
+    // Container reference retained for future viewport calculations
+    void _container;
   }
 
   /**
@@ -27,10 +27,10 @@ export class SafeAreaManager {
    */
   getInsets(): { top: number; bottom: number; left: number; right: number } {
     if (!this.probe) {
-      this.probe = document.createElement('div');
-      this.probe.style.position = 'fixed';
-      this.probe.style.visibility = 'hidden';
-      this.probe.style.pointerEvents = 'none';
+      this.probe = document.createElement("div");
+      this.probe.style.position = "fixed";
+      this.probe.style.visibility = "hidden";
+      this.probe.style.pointerEvents = "none";
       document.body.appendChild(this.probe);
     }
 
@@ -39,10 +39,10 @@ export class SafeAreaManager {
       return parseFloat(getComputedStyle(this.probe!).height) || 0;
     };
 
-    const top = read('safe-area-inset-top');
-    const bottom = read('safe-area-inset-bottom');
-    const left = read('safe-area-inset-left');
-    const right = read('safe-area-inset-right');
+    const top = read("safe-area-inset-top");
+    const bottom = read("safe-area-inset-bottom");
+    const left = read("safe-area-inset-left");
+    const right = read("safe-area-inset-right");
 
     return { top, bottom, left, right };
   }
@@ -69,11 +69,11 @@ export class SafeAreaManager {
    */
   getToolbarStyle(): Record<string, string> {
     return {
-      position: 'fixed',
-      bottom: '0',
-      left: '0',
-      right: '0',
-      paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+      position: "fixed",
+      bottom: "0",
+      left: "0",
+      right: "0",
+      paddingBottom: "env(safe-area-inset-bottom, 0px)",
     };
   }
 
@@ -83,10 +83,10 @@ export class SafeAreaManager {
    */
   applyToContainer(container: HTMLElement): void {
     const insets = this.getInsets();
-    container.style.setProperty('--ock-safe-top', `${insets.top}px`);
-    container.style.setProperty('--ock-safe-bottom', `${insets.bottom}px`);
-    container.style.setProperty('--ock-safe-left', `${insets.left}px`);
-    container.style.setProperty('--ock-safe-right', `${insets.right}px`);
+    container.style.setProperty("--ock-safe-top", `${insets.top}px`);
+    container.style.setProperty("--ock-safe-bottom", `${insets.bottom}px`);
+    container.style.setProperty("--ock-safe-left", `${insets.left}px`);
+    container.style.setProperty("--ock-safe-right", `${insets.right}px`);
   }
 
   /**
