@@ -18,21 +18,17 @@ import type {
 /** Data payload for a PhotoCard shape. */
 export interface PhotoCardData {
   /** Image URL or data URI. */
-  src: string;
-  /** Optional thumbnail URL for progressive loading. */
-  thumbnailSrc?: string;
-  /** Alt text for accessibility. */
-  alt: string;
+  imageUrl: string;
   /** Optional caption displayed below the image. */
   caption?: string;
   /** Photographer or agency credit. */
   credit?: string;
-  /** Date the photograph was taken. */
-  dateTaken?: string;
-  /** Location where the photograph was taken. */
-  location?: string;
+  /** Date associated with the photograph. */
+  date?: string;
   /** Whether the image carries a nonfiction photography label. */
   nfLabel?: boolean;
+  /** Which Four Corners corner this card belongs to. */
+  cornerKey?: "backstory" | "context" | "links" | "authorship";
 }
 
 /**
@@ -41,23 +37,21 @@ export interface PhotoCardData {
  */
 export class PhotoCard extends BaseShape<PhotoCardData> {
   readonly type = "photo-card";
-  readonly label = "Photo";
+  readonly label = "Photo Card";
   readonly icon = "image";
   readonly category: ShapeCategory = "media";
 
   constructor(props?: Partial<BaseShape<PhotoCardData>>) {
     super(props);
-    this.width = this.width || 300;
-    this.height = this.height || 225;
+    this.width = this.width || 280;
+    this.height = this.height || 320;
     this.data = {
-      src: this.data.src ?? "",
-      alt: this.data.alt ?? "",
+      imageUrl: this.data.imageUrl ?? "",
       caption: this.data.caption,
       credit: this.data.credit,
-      dateTaken: this.data.dateTaken,
-      location: this.data.location,
-      thumbnailSrc: this.data.thumbnailSrc,
+      date: this.data.date,
       nfLabel: this.data.nfLabel,
+      cornerKey: this.data.cornerKey,
     };
   }
 
@@ -88,8 +82,9 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
       }),
     );
 
-    // Image area — clipped rectangle as placeholder
-    const imgHeight = this.data.caption ? this.height - 30 : this.height;
+    // Image area — scaled placeholder
+    const captionHeight = this.data.caption ? 40 : 0;
+    const imgHeight = this.height - captionHeight;
     group.add(
       new Konva.Rect({
         width: this.width,
@@ -108,7 +103,7 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
     if (this.data.caption) {
       group.add(
         new Konva.Text({
-          y: imgHeight + 4,
+          y: imgHeight + 6,
           x: 8,
           width: this.width - 16,
           text: this.data.caption,
@@ -121,12 +116,12 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
       );
     }
 
-    // NF badge
+    // NF badge (top-right)
     if (this.data.nfLabel) {
       const badgeSize = 24;
       group.add(
         new Konva.Rect({
-          x: 6,
+          x: this.width - badgeSize - 6,
           y: 6,
           width: badgeSize,
           height: badgeSize,
@@ -136,7 +131,7 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
       );
       group.add(
         new Konva.Text({
-          x: 6,
+          x: this.width - badgeSize - 6,
           y: 6,
           width: badgeSize,
           height: badgeSize,
@@ -198,17 +193,21 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
   /** @inheritdoc */
   getEditableFields(): FieldDefinition[] {
     return [
-      { key: "src", label: "Image", type: "image", required: true },
-      { key: "alt", label: "Alt Text", type: "text", required: true },
+      { key: "imageUrl", label: "Image", type: "image", required: true },
       { key: "caption", label: "Caption", type: "textarea" },
       { key: "credit", label: "Credit", type: "text" },
-      { key: "dateTaken", label: "Date Taken", type: "text" },
-      { key: "location", label: "Location", type: "text" },
+      { key: "date", label: "Date", type: "text" },
       {
         key: "nfLabel",
         label: "NF Label",
         type: "select",
         options: ["true", "false"],
+      },
+      {
+        key: "cornerKey",
+        label: "Corner",
+        type: "select",
+        options: ["backstory", "context", "links", "authorship"],
       },
     ];
   }
@@ -216,8 +215,10 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
   /** @inheritdoc */
   validate(): ValidationResult {
     const errors: string[] = [];
-    if (!this.data.src) errors.push("Image source (src) is required.");
-    if (!this.data.alt) errors.push("Alt text is required.");
+    if (!this.data.imageUrl) errors.push("Image URL (imageUrl) is required.");
+    if (this.data.caption && this.data.caption.length > 500) {
+      errors.push("Caption must be 500 characters or fewer.");
+    }
     return { valid: errors.length === 0, errors };
   }
 
@@ -225,13 +226,12 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
   toProtocol(): Record<string, unknown> {
     return {
       type: "photograph",
-      src: this.data.src,
-      alt: this.data.alt,
+      imageUrl: this.data.imageUrl,
       caption: this.data.caption,
       credit: this.data.credit,
-      dateTaken: this.data.dateTaken,
-      location: this.data.location,
+      date: this.data.date,
       nonfiction: this.data.nfLabel,
+      cornerKey: this.data.cornerKey,
     };
   }
 }

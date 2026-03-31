@@ -37,7 +37,7 @@ export class ZoneShape extends BaseShape<ZoneData> {
 
   constructor(props?: Partial<BaseShape<ZoneData>>) {
     super(props);
-    this.width = this.width || 400;
+    this.width = this.width || 600;
     this.height = this.height || 400;
     this.data = {
       label: this.data.label ?? "",

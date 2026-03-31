@@ -20,10 +20,10 @@ export interface TextBlockData {
   content: string;
   /** Font size override (defaults to theme.fontSizeBase). */
   fontSize?: number;
-  /** Font style variant. */
-  fontStyle?: "normal" | "bold" | "italic";
+  /** Font weight variant. */
+  fontWeight?: "normal" | "bold";
   /** Text alignment. */
-  align?: "left" | "center" | "right";
+  textAlign?: "left" | "center" | "right";
   /** Optional background color for note-style blocks. */
   backgroundColor?: string;
 }
@@ -39,13 +39,13 @@ export class TextBlock extends BaseShape<TextBlockData> {
 
   constructor(props?: Partial<BaseShape<TextBlockData>>) {
     super(props);
-    this.width = this.width || 250;
-    this.height = this.height || 100;
+    this.width = this.width || 240;
+    this.height = this.height || 120;
     this.data = {
       content: this.data.content ?? "",
       fontSize: this.data.fontSize,
-      fontStyle: this.data.fontStyle ?? "normal",
-      align: this.data.align ?? "left",
+      fontWeight: this.data.fontWeight ?? "normal",
+      textAlign: this.data.textAlign ?? "left",
       backgroundColor: this.data.backgroundColor,
     };
   }
@@ -98,14 +98,9 @@ export class TextBlock extends BaseShape<TextBlockData> {
         text: this.data.content,
         fontSize,
         fontFamily: ctx.theme.fontFamily,
-        fontStyle:
-          this.data.fontStyle === "bold"
-            ? "bold"
-            : this.data.fontStyle === "italic"
-              ? "italic"
-              : "normal",
+        fontStyle: this.data.fontWeight === "bold" ? "bold" : "normal",
         fill: ctx.theme.textColor,
-        align: this.data.align ?? "left",
+        align: this.data.textAlign ?? "left",
         wrap: "word",
       }),
     );
@@ -162,13 +157,13 @@ export class TextBlock extends BaseShape<TextBlockData> {
       { key: "content", label: "Content", type: "textarea", required: true },
       { key: "fontSize", label: "Font Size", type: "number" },
       {
-        key: "fontStyle",
-        label: "Font Style",
+        key: "fontWeight",
+        label: "Font Weight",
         type: "select",
-        options: ["normal", "bold", "italic"],
+        options: ["normal", "bold"],
       },
       {
-        key: "align",
+        key: "textAlign",
         label: "Alignment",
         type: "select",
         options: ["left", "center", "right"],
