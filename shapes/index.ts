@@ -10,3 +10,5 @@ export { VoiceNote } from "./VoiceNote";
 export type { VoiceNoteData } from "./VoiceNote";
 export { LinkCard } from "./LinkCard";
 export type { LinkCardData } from "./LinkCard";
+export { VideoEmbed } from "./VideoEmbed";
+export type { VideoData } from "./VideoEmbed";
