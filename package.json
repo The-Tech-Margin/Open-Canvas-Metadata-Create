@@ -27,6 +27,7 @@
     "README.md"
   ],
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsup && node scripts/postbuild.mjs",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
