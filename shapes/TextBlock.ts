@@ -3,16 +3,16 @@
  * Rich text shape with styling options.
  */
 
-import Konva from 'konva';
-import { BaseShape } from './BaseShape';
-import { ShapeRegistry } from '../core/ShapeRegistry';
+import Konva from "konva";
+import { BaseShape } from "./BaseShape";
+import { ShapeRegistry } from "../core/ShapeRegistry";
 import type {
   ShapeCategory,
   ShapeJSON,
   FieldDefinition,
   ValidationResult,
   CanvasRenderContext,
-} from '../core/types';
+} from "../core/types";
 
 /** Data payload for a TextBlock shape. */
 export interface TextBlockData {
@@ -21,9 +21,9 @@ export interface TextBlockData {
   /** Font size override (defaults to theme.fontSizeBase). */
   fontSize?: number;
   /** Font style variant. */
-  fontStyle?: 'normal' | 'bold' | 'italic';
+  fontStyle?: "normal" | "bold" | "italic";
   /** Text alignment. */
-  align?: 'left' | 'center' | 'right';
+  align?: "left" | "center" | "right";
   /** Optional background color for note-style blocks. */
   backgroundColor?: string;
 }
@@ -32,20 +32,21 @@ export interface TextBlockData {
  * A text block shape that renders styled text on the canvas.
  */
 export class TextBlock extends BaseShape<TextBlockData> {
-  readonly type = 'text-block';
-  readonly label = 'Text';
-  readonly icon = 'type';
-  readonly category: ShapeCategory = 'text';
+  readonly type = "text-block";
+  readonly label = "Text";
+  readonly icon = "type";
+  readonly category: ShapeCategory = "text";
 
   constructor(props?: Partial<BaseShape<TextBlockData>>) {
     super(props);
     this.width = this.width || 250;
     this.height = this.height || 100;
     this.data = {
-      content: '',
-      fontStyle: 'normal',
-      align: 'left',
-      ...this.data,
+      content: this.data.content ?? "",
+      fontSize: this.data.fontSize,
+      fontStyle: this.data.fontStyle ?? "normal",
+      align: this.data.align ?? "left",
+      backgroundColor: this.data.backgroundColor,
     };
   }
 
@@ -68,7 +69,7 @@ export class TextBlock extends BaseShape<TextBlockData> {
           height: this.height,
           fill: this.data.backgroundColor,
           cornerRadius: ctx.theme.shapeBorderRadius,
-        })
+        }),
       );
     }
 
@@ -82,7 +83,7 @@ export class TextBlock extends BaseShape<TextBlockData> {
           strokeWidth: 2,
           dash: [6, 3],
           cornerRadius: ctx.theme.shapeBorderRadius,
-        })
+        }),
       );
     }
 
@@ -97,11 +98,16 @@ export class TextBlock extends BaseShape<TextBlockData> {
         text: this.data.content,
         fontSize,
         fontFamily: ctx.theme.fontFamily,
-        fontStyle: this.data.fontStyle === 'bold' ? 'bold' : this.data.fontStyle === 'italic' ? 'italic' : 'normal',
+        fontStyle:
+          this.data.fontStyle === "bold"
+            ? "bold"
+            : this.data.fontStyle === "italic"
+              ? "italic"
+              : "normal",
         fill: ctx.theme.textColor,
-        align: this.data.align ?? 'left',
-        wrap: 'word',
-      })
+        align: this.data.align ?? "left",
+        wrap: "word",
+      }),
     );
 
     return group;
@@ -116,8 +122,8 @@ export class TextBlock extends BaseShape<TextBlockData> {
       height: this.height,
       text: this.data.content,
       fontSize: 10,
-      fill: '#64748b',
-      wrap: 'word',
+      fill: "#64748b",
+      wrap: "word",
     });
   }
 
@@ -153,18 +159,28 @@ export class TextBlock extends BaseShape<TextBlockData> {
   /** @inheritdoc */
   getEditableFields(): FieldDefinition[] {
     return [
-      { key: 'content', label: 'Content', type: 'textarea', required: true },
-      { key: 'fontSize', label: 'Font Size', type: 'number' },
-      { key: 'fontStyle', label: 'Font Style', type: 'select', options: ['normal', 'bold', 'italic'] },
-      { key: 'align', label: 'Alignment', type: 'select', options: ['left', 'center', 'right'] },
-      { key: 'backgroundColor', label: 'Background Color', type: 'text' },
+      { key: "content", label: "Content", type: "textarea", required: true },
+      { key: "fontSize", label: "Font Size", type: "number" },
+      {
+        key: "fontStyle",
+        label: "Font Style",
+        type: "select",
+        options: ["normal", "bold", "italic"],
+      },
+      {
+        key: "align",
+        label: "Alignment",
+        type: "select",
+        options: ["left", "center", "right"],
+      },
+      { key: "backgroundColor", label: "Background Color", type: "text" },
     ];
   }
 
   /** @inheritdoc */
   validate(): ValidationResult {
     const errors: string[] = [];
-    if (!this.data.content) errors.push('Text content is required.');
+    if (!this.data.content) errors.push("Text content is required.");
     return { valid: errors.length === 0, errors };
   }
 }

@@ -4,16 +4,16 @@
  * Supports nonfiction photography labeling.
  */
 
-import Konva from 'konva';
-import { BaseShape } from './BaseShape';
-import { ShapeRegistry } from '../core/ShapeRegistry';
+import Konva from "konva";
+import { BaseShape } from "./BaseShape";
+import { ShapeRegistry } from "../core/ShapeRegistry";
 import type {
   ShapeCategory,
   ShapeJSON,
   FieldDefinition,
   ValidationResult,
   CanvasRenderContext,
-} from '../core/types';
+} from "../core/types";
 
 /** Data payload for a PhotoCard shape. */
 export interface PhotoCardData {
@@ -40,19 +40,24 @@ export interface PhotoCardData {
  * credit, and nonfiction label badge.
  */
 export class PhotoCard extends BaseShape<PhotoCardData> {
-  readonly type = 'photo-card';
-  readonly label = 'Photo';
-  readonly icon = 'image';
-  readonly category: ShapeCategory = 'media';
+  readonly type = "photo-card";
+  readonly label = "Photo";
+  readonly icon = "image";
+  readonly category: ShapeCategory = "media";
 
   constructor(props?: Partial<BaseShape<PhotoCardData>>) {
     super(props);
     this.width = this.width || 300;
     this.height = this.height || 225;
     this.data = {
-      src: '',
-      alt: '',
-      ...this.data,
+      src: this.data.src ?? "",
+      alt: this.data.alt ?? "",
+      caption: this.data.caption,
+      credit: this.data.credit,
+      dateTaken: this.data.dateTaken,
+      location: this.data.location,
+      thumbnailSrc: this.data.thumbnailSrc,
+      nfLabel: this.data.nfLabel,
     };
   }
 
@@ -80,7 +85,7 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
         cornerRadius: ctx.theme.shapeBorderRadius,
         stroke: borderColor,
         strokeWidth: ctx.selected ? 2 : 1,
-      })
+      }),
     );
 
     // Image area — clipped rectangle as placeholder
@@ -95,8 +100,8 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
           this.data.caption ? 0 : ctx.theme.shapeBorderRadius,
           this.data.caption ? 0 : ctx.theme.shapeBorderRadius,
         ],
-        fill: '#e2e8f0',
-      })
+        fill: "#e2e8f0",
+      }),
     );
 
     // Caption text
@@ -111,8 +116,8 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
           fontFamily: ctx.theme.fontFamily,
           fill: ctx.theme.textColor,
           ellipsis: true,
-          wrap: 'none',
-        })
+          wrap: "none",
+        }),
       );
     }
 
@@ -127,7 +132,7 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
           height: badgeSize,
           fill: ctx.theme.accentPrimary,
           cornerRadius: 4,
-        })
+        }),
       );
       group.add(
         new Konva.Text({
@@ -135,14 +140,14 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
           y: 6,
           width: badgeSize,
           height: badgeSize,
-          text: 'NF',
+          text: "NF",
           fontSize: 11,
           fontFamily: ctx.theme.fontFamily,
-          fontStyle: 'bold',
-          fill: '#ffffff',
-          align: 'center',
-          verticalAlign: 'middle',
-        })
+          fontStyle: "bold",
+          fill: "#ffffff",
+          align: "center",
+          verticalAlign: "middle",
+        }),
       );
     }
 
@@ -156,7 +161,7 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
       y: this.y,
       width: this.width,
       height: this.height,
-      fill: '#e2e8f0',
+      fill: "#e2e8f0",
       cornerRadius: 4,
     });
   }
@@ -193,28 +198,33 @@ export class PhotoCard extends BaseShape<PhotoCardData> {
   /** @inheritdoc */
   getEditableFields(): FieldDefinition[] {
     return [
-      { key: 'src', label: 'Image', type: 'image', required: true },
-      { key: 'alt', label: 'Alt Text', type: 'text', required: true },
-      { key: 'caption', label: 'Caption', type: 'textarea' },
-      { key: 'credit', label: 'Credit', type: 'text' },
-      { key: 'dateTaken', label: 'Date Taken', type: 'text' },
-      { key: 'location', label: 'Location', type: 'text' },
-      { key: 'nfLabel', label: 'NF Label', type: 'select', options: ['true', 'false'] },
+      { key: "src", label: "Image", type: "image", required: true },
+      { key: "alt", label: "Alt Text", type: "text", required: true },
+      { key: "caption", label: "Caption", type: "textarea" },
+      { key: "credit", label: "Credit", type: "text" },
+      { key: "dateTaken", label: "Date Taken", type: "text" },
+      { key: "location", label: "Location", type: "text" },
+      {
+        key: "nfLabel",
+        label: "NF Label",
+        type: "select",
+        options: ["true", "false"],
+      },
     ];
   }
 
   /** @inheritdoc */
   validate(): ValidationResult {
     const errors: string[] = [];
-    if (!this.data.src) errors.push('Image source (src) is required.');
-    if (!this.data.alt) errors.push('Alt text is required.');
+    if (!this.data.src) errors.push("Image source (src) is required.");
+    if (!this.data.alt) errors.push("Alt text is required.");
     return { valid: errors.length === 0, errors };
   }
 
   /** @inheritdoc */
   toProtocol(): Record<string, unknown> {
     return {
-      type: 'photograph',
+      type: "photograph",
       src: this.data.src,
       alt: this.data.alt,
       caption: this.data.caption,

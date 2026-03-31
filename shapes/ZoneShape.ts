@@ -3,9 +3,9 @@
  * Spatial grouping container for organizing shapes into zones.
  */
 
-import Konva from 'konva';
-import { BaseShape } from './BaseShape';
-import { ShapeRegistry } from '../core/ShapeRegistry';
+import Konva from "konva";
+import { BaseShape } from "./BaseShape";
+import { ShapeRegistry } from "../core/ShapeRegistry";
 import type {
   Point,
   ShapeCategory,
@@ -13,7 +13,7 @@ import type {
   FieldDefinition,
   ValidationResult,
   CanvasRenderContext,
-} from '../core/types';
+} from "../core/types";
 
 /** Data payload for a ZoneShape. */
 export interface ZoneData {
@@ -30,18 +30,19 @@ export interface ZoneData {
  * Zones are layout containers and are not draggable by default.
  */
 export class ZoneShape extends BaseShape<ZoneData> {
-  readonly type = 'zone';
-  readonly label = 'Zone';
-  readonly icon = 'square-dashed';
-  readonly category: ShapeCategory = 'container';
+  readonly type = "zone";
+  readonly label = "Zone";
+  readonly icon = "square-dashed";
+  readonly category: ShapeCategory = "container";
 
   constructor(props?: Partial<BaseShape<ZoneData>>) {
     super(props);
     this.width = this.width || 400;
     this.height = this.height || 400;
     this.data = {
-      label: '',
-      ...this.data,
+      label: this.data.label ?? "",
+      color: this.data.color,
+      collapsed: this.data.collapsed,
     };
   }
 
@@ -66,7 +67,7 @@ export class ZoneShape extends BaseShape<ZoneData> {
           fill: this.data.color ?? ctx.theme.shapeBorder,
           cornerRadius: ctx.theme.shapeBorderRadius,
           opacity: 0.3,
-        })
+        }),
       );
       group.add(
         new Konva.Text({
@@ -75,11 +76,11 @@ export class ZoneShape extends BaseShape<ZoneData> {
           text: this.data.label,
           fontSize: ctx.theme.fontSizeSmall,
           fontFamily: ctx.theme.fontFamily,
-          fontStyle: 'bold',
+          fontStyle: "bold",
           fill: ctx.theme.textSecondary,
-          align: 'center',
-          verticalAlign: 'middle',
-        })
+          align: "center",
+          verticalAlign: "middle",
+        }),
       );
       return group;
     }
@@ -93,10 +94,10 @@ export class ZoneShape extends BaseShape<ZoneData> {
         stroke: strokeColor,
         strokeWidth: 1,
         dash: [8, 4],
-        fill: this.data.color ?? 'transparent',
+        fill: this.data.color ?? "transparent",
         opacity: 0.05,
         cornerRadius: ctx.theme.shapeBorderRadius,
-      })
+      }),
     );
 
     // Visible border on top of the subtle fill
@@ -108,7 +109,7 @@ export class ZoneShape extends BaseShape<ZoneData> {
         strokeWidth: 1,
         dash: [8, 4],
         cornerRadius: ctx.theme.shapeBorderRadius,
-      })
+      }),
     );
 
     // Label in top-left
@@ -119,9 +120,9 @@ export class ZoneShape extends BaseShape<ZoneData> {
         text: this.data.label,
         fontSize: ctx.theme.fontSizeSmall,
         fontFamily: ctx.theme.fontFamily,
-        fontStyle: 'bold',
+        fontStyle: "bold",
         fill: ctx.theme.textSecondary,
-      })
+      }),
     );
 
     return group;
@@ -134,7 +135,7 @@ export class ZoneShape extends BaseShape<ZoneData> {
       y: this.y,
       width: this.width,
       height: this.height,
-      stroke: this.data.color ?? '#cbd5e1',
+      stroke: this.data.color ?? "#cbd5e1",
       strokeWidth: 1,
       dash: [4, 2],
       cornerRadius: 4,
@@ -186,23 +187,28 @@ export class ZoneShape extends BaseShape<ZoneData> {
   /** @inheritdoc */
   getEditableFields(): FieldDefinition[] {
     return [
-      { key: 'label', label: 'Label', type: 'text', required: true },
-      { key: 'color', label: 'Color', type: 'text' },
-      { key: 'collapsed', label: 'Collapsed', type: 'select', options: ['true', 'false'] },
+      { key: "label", label: "Label", type: "text", required: true },
+      { key: "color", label: "Color", type: "text" },
+      {
+        key: "collapsed",
+        label: "Collapsed",
+        type: "select",
+        options: ["true", "false"],
+      },
     ];
   }
 
   /** @inheritdoc */
   validate(): ValidationResult {
     const errors: string[] = [];
-    if (!this.data.label) errors.push('Zone label is required.');
+    if (!this.data.label) errors.push("Zone label is required.");
     return { valid: errors.length === 0, errors };
   }
 
   /** @inheritdoc */
   toProtocol(): Record<string, unknown> {
     return {
-      type: 'zone',
+      type: "zone",
       label: this.data.label,
       bounds: { x: this.x, y: this.y, width: this.width, height: this.height },
     };

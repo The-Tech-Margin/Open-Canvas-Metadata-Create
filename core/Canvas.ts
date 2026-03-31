@@ -4,13 +4,13 @@
  * three-layer architecture, and dot grid rendering.
  */
 
-import Konva from 'konva';
-import type { CameraState, CanvasMode, Rect, ThemeTokens } from './types';
+import Konva from "konva";
+import type { CameraState, CanvasMode, Rect, ThemeTokens } from "./types";
 
 /** Options for constructing a Canvas instance. */
 export interface CanvasOptions {
   /** DOM element or CSS selector for the stage container. */
-  container: HTMLElement | string;
+  container: HTMLDivElement | string;
   /** Canvas width in pixels. */
   width: number;
   /** Canvas height in pixels. */
@@ -51,7 +51,7 @@ export class Canvas {
    */
   constructor(options: CanvasOptions) {
     this.camera = { x: 0, y: 0, zoom: 1 };
-    this.mode = 'edit';
+    this.mode = "edit";
     this.theme = options.theme;
 
     this.stage = new Konva.Stage({
@@ -73,7 +73,7 @@ export class Canvas {
     this.stage.add(this.chromeLayer);
 
     this.drawGrid();
-    this.stage.on('wheel', this.handleWheel.bind(this));
+    this.stage.on("wheel", this.handleWheel.bind(this));
   }
 
   /**
@@ -96,14 +96,14 @@ export class Canvas {
    */
   setMode(mode: CanvasMode): void {
     this.mode = mode;
-    const draggable = mode === 'edit';
+    const draggable = mode === "edit";
 
     this.contentLayer.children.forEach((node) => {
-      node.draggable(draggable && !node.getAttr('locked'));
+      node.draggable(draggable && !node.getAttr("locked"));
     });
 
     this.contentLayer.listening(true);
-    this.chromeLayer.visible(mode === 'edit');
+    this.chromeLayer.visible(mode === "edit");
     this.stage.batchDraw();
   }
 
@@ -165,7 +165,7 @@ export class Canvas {
     const zoom = Math.min(
       (stageW - padding * 2) / box.width,
       (stageH - padding * 2) / box.height,
-      5
+      5,
     );
 
     const cx = box.x + box.width / 2;
@@ -208,7 +208,7 @@ export class Canvas {
             radius: dotSize / 2,
             fill: this.theme.canvasDot,
             listening: false,
-          })
+          }),
         );
       }
     }
@@ -234,7 +234,10 @@ export class Canvas {
     };
 
     const direction = e.evt.deltaY > 0 ? -1 : 1;
-    const newScale = Math.min(Math.max(oldScale * Math.pow(scaleBy, direction), 0.1), 5);
+    const newScale = Math.min(
+      Math.max(oldScale * Math.pow(scaleBy, direction), 0.1),
+      5,
+    );
 
     this.setCamera({
       zoom: newScale,

@@ -5,11 +5,12 @@
  * registry to instantiate shapes from serialized data.
  */
 
-import type { ShapeCategory } from './types';
-import { BaseShape } from '../shapes/BaseShape';
+import type { ShapeCategory } from "./types";
+import { BaseShape } from "../shapes/BaseShape";
 
 /** Constructor type for BaseShape subclasses. */
-type BaseShapeConstructor = new (props?: Partial<BaseShape>) => BaseShape;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type BaseShapeConstructor = new (props?: any) => BaseShape<any>;
 
 /**
  * Global registry that maps shape type keys to their constructors.
@@ -34,7 +35,7 @@ export class ShapeRegistry {
 
     if (ShapeRegistry.registry.has(typeKey)) {
       throw new Error(
-        `ShapeRegistry: type "${typeKey}" is already registered. Unregister it first or use a different type key.`
+        `ShapeRegistry: type "${typeKey}" is already registered. Unregister it first or use a different type key.`,
       );
     }
 
@@ -92,7 +93,7 @@ export class ShapeRegistry {
 
     if (!ShapeClass) {
       throw new Error(
-        `ShapeRegistry: type "${type}" is not registered. Available types: ${[...ShapeRegistry.registry.keys()].join(', ')}`
+        `ShapeRegistry: type "${type}" is not registered. Available types: ${[...ShapeRegistry.registry.keys()].join(", ")}`,
       );
     }
 
