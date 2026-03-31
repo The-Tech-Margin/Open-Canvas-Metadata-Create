@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "konva": "^9.3.0",
-    "react-konva": "^18.2.0",
+    "react-konva": "^19.0.0",
     "react-konva-utils": "^1.0.0"
   },
   "devDependencies": {
@@ -52,14 +52,14 @@
     "@storybook/react": "^8.6.18",
     "@storybook/react-vite": "^8.6.18",
     "@storybook/test": "^8.6.18",
-    "@testing-library/react": "^14.0.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.56.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "storybook": "^8.6.18",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
