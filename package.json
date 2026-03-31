@@ -1,0 +1,80 @@
+{
+  "name": "@fourcorners/canvas",
+  "version": "0.1.0",
+  "description": "Open canvas library for visual creation and structured metadata output. Built on Konva.js.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./react": {
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.js",
+      "types": "./dist/react.d.ts"
+    },
+    "./theme": {
+      "import": "./dist/theme.mjs",
+      "require": "./dist/theme.js",
+      "types": "./dist/theme.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.tsx",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "konva": "^9.3.0",
+    "react-konva": "^18.2.0",
+    "react-konva-utils": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.4.0",
+    "tsup": "^8.0.0",
+    "vitest": "^1.6.0",
+    "@testing-library/react": "^14.0.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0"
+  },
+  "keywords": [
+    "canvas",
+    "konva",
+    "react",
+    "visual-editor",
+    "metadata",
+    "four-corners",
+    "photography",
+    "nonfiction"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fourcorners/canvas.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

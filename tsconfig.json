@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "paths": {
+      "@core/*": ["./core/*"],
+      "@shapes/*": ["./shapes/*"],
+      "@media/*": ["./media/*"],
+      "@mobile/*": ["./mobile/*"],
+      "@theme/*": ["./theme/*"],
+      "@interactions/*": ["./interactions/*"],
+      "@react/*": ["./react/*"]
+    }
+  },
+  "include": [
+    "core/**/*.ts",
+    "shapes/**/*.ts",
+    "shapes/**/*.tsx",
+    "media/**/*.ts",
+    "mobile/**/*.ts",
+    "theme/**/*.ts",
+    "interactions/**/*.ts",
+    "interactions/**/*.tsx",
+    "react/**/*.ts",
+    "react/**/*.tsx",
+    "index.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "__tests__",
+    "**/*.test.ts",
+    "**/*.stories.tsx"
+  ]
+}
