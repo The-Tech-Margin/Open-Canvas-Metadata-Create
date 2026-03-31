@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npx vitest:*)",
       "Bash(npm install:*)",
-      "Bash(npm outdated:*)"
+      "Bash(npm outdated:*)",
+      "Bash(npm audit:*)"
     ]
   }
 }
