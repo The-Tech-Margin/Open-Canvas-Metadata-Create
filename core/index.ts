@@ -1,4 +1,6 @@
 // Core engine exports
+export { Canvas } from "./Canvas";
+export type { CanvasOptions } from "./Canvas";
 export { ShapeRegistry } from "./ShapeRegistry";
 export type {
   Point,
