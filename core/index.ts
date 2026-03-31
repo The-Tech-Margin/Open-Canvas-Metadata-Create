@@ -7,6 +7,7 @@ export type { SnapGuide } from "./SnapEngine";
 export { SelectionManager } from "./SelectionManager";
 export { HistoryStack } from "./HistoryStack";
 export type { Command } from "./HistoryStack";
+export { Serializer } from "./Serializer";
 export type {
   Point,
   Size,
