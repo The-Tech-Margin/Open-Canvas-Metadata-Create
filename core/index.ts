@@ -1,4 +1,5 @@
 // Core engine exports
+export { ShapeRegistry } from "./ShapeRegistry";
 export type {
   Point,
   Size,
