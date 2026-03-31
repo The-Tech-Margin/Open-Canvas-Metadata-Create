@@ -1058,6 +1058,61 @@ Create a brief CHANGELOG.md:
 
 ---
 
+### Prompt 27: Storybook setup and shape stories
+
+```
+Install Storybook for React + Vite:
+npx storybook@latest init --type react_vite
+
+Create stories for each shape:
+- shapes/__stories__/PhotoCard.stories.tsx
+- shapes/__stories__/TextBlock.stories.tsx
+- shapes/__stories__/ZoneShape.stories.tsx
+
+Each story renders a CanvasProvider + CanvasView with
+that shape added via useShapes. Include controls for
+all editable fields. Add a theme switcher using
+Storybook's toolbar addon.
+
+Implementation details:
+
+1. After Storybook init, configure .storybook/main.ts:
+   - Add stories glob: ['../shapes/__stories__/**/*.stories.tsx', '../react/__stories__/**/*.stories.tsx']
+   - Framework: @storybook/react-vite
+
+2. Create .storybook/preview.ts:
+   - Import ThemeTokens, lightTheme, darkTheme, fourCornersTheme from theme/
+   - Register globalTypes for a "Theme" toolbar dropdown with options: Four Corners, Light, Dark
+   - Create a decorator that wraps every story in <CanvasProvider theme={selectedTheme}>
+
+3. shapes/__stories__/PhotoCard.stories.tsx:
+   - Default story: renders a PhotoCard with a placeholder image, caption, and credit
+   - With NF Label story: nfLabel = true
+   - No Caption story: caption omitted
+   - Storybook argTypes mapped to all PhotoCardData editable fields (src, alt, caption, credit, dateTaken, location, nfLabel)
+   - Each story uses a helper component that calls useShapes().add() in a useEffect to place the shape on the canvas
+
+4. shapes/__stories__/TextBlock.stories.tsx:
+   - Default story: renders a TextBlock with sample content
+   - Bold story: fontStyle = 'bold'
+   - With Background story: backgroundColor set
+   - Centered story: align = 'center'
+   - argTypes for all TextBlockData fields (content, fontSize, fontStyle, align, backgroundColor)
+
+5. shapes/__stories__/ZoneShape.stories.tsx:
+   - Default story: empty zone with label
+   - Colored story: zone with color tint
+   - Collapsed story: collapsed = true
+   - With Children story: zone containing a PhotoCard and TextBlock
+   - argTypes for all ZoneData fields (label, color, collapsed)
+
+6. Verify: npm run storybook — all stories render, controls work, theme switcher toggles between presets.
+```
+
+**Commit:** `feat(storybook): add Storybook with shape stories and theme switcher`
+
+---
+
 ## Post-build: Integration prompt (for the 4C app, not this library)
 
 This prompt is for later — when integrating the library into the Writing with Light Next.js app.
