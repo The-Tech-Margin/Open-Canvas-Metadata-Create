@@ -19,6 +19,18 @@ export interface ThemeTokens {
   shapeSelectedBorder: string;
   shapeHoverBorder: string;
 
+  // Shape internals
+  /** Placeholder fill for empty image areas, favicon slots, and thumbnails. */
+  shapePlaceholder: string;
+  /** Surface color for shape card backgrounds (may differ from canvasBg). */
+  shapeSurface: string;
+  /** Badge / overlay text color (e.g. NF label, video duration). */
+  badgeText: string;
+  /** Video player background color. */
+  videoBg: string;
+  /** Semi-transparent overlay for controls on media shapes. */
+  overlayBg: string;
+
   // Typography
   fontFamily: string;
   fontSizeBase: number;
