@@ -3,38 +3,38 @@
  * URL preview card shape with favicon, title, domain, and clickable overlay.
  */
 
-import Konva from 'konva';
-import { BaseShape } from './BaseShape';
-import { ShapeRegistry } from '../core/ShapeRegistry';
-import type { LinkPreviewData } from '../media/LinkPreview';
+import Konva from "konva";
+import { BaseShape } from "./BaseShape";
+import { ShapeRegistry } from "../core/ShapeRegistry";
+import type { LinkPreviewData } from "../media/LinkPreview";
 import type {
   ShapeCategory,
   ShapeJSON,
   FieldDefinition,
   ValidationResult,
   CanvasRenderContext,
-} from '../core/types';
+} from "../core/types";
 
-/** Data payload for a LinkCard shape (extends LinkPreviewData). */
-export interface LinkCardData extends LinkPreviewData {}
+/** Data payload for a LinkCard shape (same fields as LinkPreviewData). */
+export type LinkCardData = LinkPreviewData;
 
 /**
  * A link card shape that renders a URL preview with title, domain,
  * optional description, and a clickable HTML overlay.
  */
 export class LinkCard extends BaseShape<LinkCardData> {
-  readonly type = 'link-card';
-  readonly label = 'Link';
-  readonly icon = 'link';
-  readonly category: ShapeCategory = 'media';
+  readonly type = "link-card";
+  readonly label = "Link";
+  readonly icon = "link";
+  readonly category: ShapeCategory = "media";
 
   constructor(props?: Partial<BaseShape<LinkCardData>>) {
     super(props);
     this.width = this.width || 300;
     this.height = this.height || 100;
     this.data = {
-      url: this.data.url ?? '',
-      domain: this.data.domain ?? '',
+      url: this.data.url ?? "",
+      domain: this.data.domain ?? "",
       title: this.data.title,
       description: this.data.description,
       image: this.data.image,
@@ -66,7 +66,7 @@ export class LinkCard extends BaseShape<LinkCardData> {
         cornerRadius: ctx.theme.shapeBorderRadius,
         stroke: borderColor,
         strokeWidth: ctx.selected ? 2 : 1,
-      })
+      }),
     );
 
     // Favicon placeholder area
@@ -80,9 +80,9 @@ export class LinkCard extends BaseShape<LinkCardData> {
         y: 12,
         width: iconSize,
         height: iconSize,
-        fill: '#e2e8f0',
+        fill: "#e2e8f0",
         cornerRadius: 4,
-      })
+      }),
     );
 
     // Title
@@ -95,11 +95,11 @@ export class LinkCard extends BaseShape<LinkCardData> {
         text: title,
         fontSize: ctx.theme.fontSizeBase,
         fontFamily: ctx.theme.fontFamily,
-        fontStyle: 'bold',
+        fontStyle: "bold",
         fill: ctx.theme.textColor,
         ellipsis: true,
-        wrap: 'none',
-      })
+        wrap: "none",
+      }),
     );
 
     // Domain
@@ -113,8 +113,8 @@ export class LinkCard extends BaseShape<LinkCardData> {
         fontFamily: ctx.theme.fontFamily,
         fill: ctx.theme.textSecondary,
         ellipsis: true,
-        wrap: 'none',
-      })
+        wrap: "none",
+      }),
     );
 
     // Description (truncated to 2 lines)
@@ -130,8 +130,8 @@ export class LinkCard extends BaseShape<LinkCardData> {
           fontFamily: ctx.theme.fontFamily,
           fill: ctx.theme.textSecondary,
           ellipsis: true,
-          wrap: 'word',
-        })
+          wrap: "word",
+        }),
       );
     }
 
@@ -144,17 +144,17 @@ export class LinkCard extends BaseShape<LinkCardData> {
   renderOverlay(): unknown {
     if (!this.data.url) return null;
     return {
-      tag: 'a',
+      tag: "a",
       props: {
         href: this.data.url,
-        target: '_blank',
-        rel: 'noopener noreferrer',
+        target: "_blank",
+        rel: "noopener noreferrer",
         style: {
-          display: 'block',
+          display: "block",
           width: `${this.width}px`,
           height: `${this.height}px`,
           opacity: 0,
-          cursor: 'pointer',
+          cursor: "pointer",
         },
       },
     };
@@ -167,7 +167,7 @@ export class LinkCard extends BaseShape<LinkCardData> {
       y: this.y,
       width: this.width,
       height: this.height,
-      fill: '#e2e8f0',
+      fill: "#e2e8f0",
       cornerRadius: 4,
     });
   }
@@ -204,16 +204,16 @@ export class LinkCard extends BaseShape<LinkCardData> {
   /** @inheritdoc */
   getEditableFields(): FieldDefinition[] {
     return [
-      { key: 'url', label: 'URL', type: 'url', required: true },
-      { key: 'title', label: 'Title', type: 'text' },
-      { key: 'description', label: 'Description', type: 'textarea' },
+      { key: "url", label: "URL", type: "url", required: true },
+      { key: "title", label: "Title", type: "text" },
+      { key: "description", label: "Description", type: "textarea" },
     ];
   }
 
   /** @inheritdoc */
   validate(): ValidationResult {
     const errors: string[] = [];
-    if (!this.data.url) errors.push('URL is required.');
+    if (!this.data.url) errors.push("URL is required.");
     return { valid: errors.length === 0, errors };
   }
 }

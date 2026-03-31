@@ -3,10 +3,16 @@
  * React context provider wrapping the core Canvas engine.
  */
 
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
-import type { CanvasMode, ThemeTokens } from '../core/types';
-import { Canvas } from '../core/Canvas';
-import { fourCornersTheme } from '../theme/presets/fourCorners';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import type { CanvasMode, ThemeTokens } from "../core/types";
+import { Canvas } from "../core/Canvas";
+import { fourCornersTheme } from "../theme/presets/fourCorners";
 
 /** Value exposed by the canvas context. */
 export interface CanvasContextValue {
@@ -36,7 +42,7 @@ export interface CanvasProviderProps {
  */
 export function CanvasProvider({
   theme = fourCornersTheme,
-  mode = 'edit',
+  mode = "edit",
   children,
 }: CanvasProviderProps) {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
@@ -59,7 +65,7 @@ export function CanvasProvider({
     return () => {
       instance.destroy();
     };
-  }, [theme]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [theme]);
 
   // Sync mode changes
   useEffect(() => {
@@ -73,7 +79,12 @@ export function CanvasProvider({
       {/* Hidden container for Konva Stage mounting */}
       <div
         ref={containerRef}
-        style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
+        style={{
+          position: "absolute",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+        }}
       />
       {children}
     </CanvasContext.Provider>
@@ -89,7 +100,7 @@ export function CanvasProvider({
 export function useCanvasContext(): CanvasContextValue {
   const ctx = useContext(CanvasContext);
   if (!ctx) {
-    throw new Error('useCanvasContext must be used within a <CanvasProvider>');
+    throw new Error("useCanvasContext must be used within a <CanvasProvider>");
   }
   return ctx;
 }

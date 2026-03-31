@@ -3,11 +3,16 @@
  * Maps a BaseShape instance to Konva nodes, with optional HTML overlay.
  */
 
-import React, { useMemo } from 'react';
-import { Group } from 'react-konva';
-import { Html } from 'react-konva-utils';
-import type { BaseShape } from '../shapes/BaseShape';
-import type { CanvasRenderContext, CanvasMode, CameraState, ThemeTokens } from '../core/types';
+import React, { useMemo } from "react";
+import { Group } from "react-konva";
+import { Html } from "react-konva-utils";
+import type { BaseShape } from "../shapes/BaseShape";
+import type {
+  CanvasRenderContext,
+  CanvasMode,
+  CameraState,
+  ThemeTokens,
+} from "../core/types";
 
 /** Props for {@link ShapeRenderer}. */
 export interface ShapeRendererProps {
@@ -37,7 +42,7 @@ export function ShapeRenderer({
 }: ShapeRendererProps) {
   const ctx: CanvasRenderContext = useMemo(
     () => ({ theme, mode, camera, selected }),
-    [theme, mode, camera, selected]
+    [theme, mode, camera, selected],
   );
 
   const konvaNodes = useMemo(() => shape.render(ctx), [shape, ctx]);
@@ -47,7 +52,7 @@ export function ShapeRenderer({
       return shape.renderOverlay();
     }
     return null;
-  }, [shape, mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [shape, mode]);
 
   return (
     <Group>
@@ -60,7 +65,7 @@ export function ShapeRenderer({
           }}
           divProps={{
             style: {
-              pointerEvents: mode === 'edit' ? 'none' : 'auto',
+              pointerEvents: mode === "edit" ? "none" : "auto",
             },
           }}
         >
