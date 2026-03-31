@@ -1,3 +1,5 @@
+"use client";
+
 // React binding exports
 export { CanvasProvider, useCanvasContext } from "./CanvasProvider";
 export type { CanvasContextValue, CanvasProviderProps } from "./CanvasProvider";
