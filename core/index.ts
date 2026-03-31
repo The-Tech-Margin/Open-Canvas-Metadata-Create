@@ -2,6 +2,8 @@
 export { Canvas } from "./Canvas";
 export type { CanvasOptions } from "./Canvas";
 export { ShapeRegistry } from "./ShapeRegistry";
+export { SnapEngine } from "./SnapEngine";
+export type { SnapGuide } from "./SnapEngine";
 export type {
   Point,
   Size,
