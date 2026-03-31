@@ -114,13 +114,32 @@ Designed mobile-first:
 
 Peer dependencies: React 18+, ReactDOM 18+.
 
+## Preview
+
+An interactive preview page renders all shape types from real Four Corners metadata (Rockaway Beach photo story). Use it to explore themes, modes, viewports, and shape selection.
+
+```bash
+npm run preview      # Opens at http://localhost:4173
+```
+
+The preview includes:
+- **Theme switcher** — light, dark, Four Corners presets
+- **Mode toggle** — edit (draggable shapes), view (pan/zoom), present
+- **Viewport presets** — desktop (1280x800), tablet (768x1024), mobile (375x812)
+- **Zoom controls** — scroll-wheel zoom, fit-to-content, reset
+- **Shape inspector** — click any shape to see its type, fields, validation, and metadata
+- **Pan** — drag the canvas to pan in any mode
+
+The preview data comes from `test-data/rockaway-beach.json`, mapped through `test-data/mapFourCornersToShapes.ts` which demonstrates the bridge pattern for converting Four Corners protocol metadata into canvas shapes.
+
 ## Build
 
 ```bash
 npm run build        # Production build via tsup
 npm run dev          # Watch mode
 npm run typecheck    # Type checking only
-npm run test         # Vitest
+npm run test         # Vitest (32 tests)
+npm run preview      # Interactive preview page
 npm run storybook    # Component development
 ```
 
