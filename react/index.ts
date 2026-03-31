@@ -12,3 +12,5 @@ export { useCamera } from "./hooks/useCamera";
 export type { UseCameraReturn } from "./hooks/useCamera";
 export { useMode } from "./hooks/useMode";
 export type { UseModeReturn } from "./hooks/useMode";
+export { useBridge } from "./hooks/useBridge";
+export type { BridgeConfig, UseBridgeReturn } from "./hooks/useBridge";

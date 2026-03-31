@@ -6,3 +6,5 @@ export { useCamera } from "./useCamera";
 export type { UseCameraReturn } from "./useCamera";
 export { useMode } from "./useMode";
 export type { UseModeReturn } from "./useMode";
+export { useBridge } from "./useBridge";
+export type { BridgeConfig, UseBridgeReturn } from "./useBridge";
