@@ -8,3 +8,5 @@ export { ZoneShape } from "./ZoneShape";
 export type { ZoneData } from "./ZoneShape";
 export { VoiceNote } from "./VoiceNote";
 export type { VoiceNoteData } from "./VoiceNote";
+export { LinkCard } from "./LinkCard";
+export type { LinkCardData } from "./LinkCard";
