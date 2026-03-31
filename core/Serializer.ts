@@ -3,10 +3,15 @@
  * Serialization and deserialization of CanvasDocument JSON.
  */
 
-import type { Canvas } from './Canvas';
-import type { CanvasDocument, ShapeJSON, ValidationResult, ZoneJSON } from './types';
-import { ShapeRegistry } from './ShapeRegistry';
-import type { BaseShape } from '../shapes/BaseShape';
+import type { Canvas } from "./Canvas";
+import type {
+  CanvasDocument,
+  ShapeJSON,
+  ValidationResult,
+  ZoneJSON,
+} from "./types";
+import { ShapeRegistry } from "./ShapeRegistry";
+import type { BaseShape } from "../shapes/BaseShape";
 
 /**
  * Converts between live canvas state and the CanvasDocument JSON format.
@@ -23,7 +28,7 @@ export class Serializer {
 
     // Build zone list from zone-type shapes, calculating contained shape IDs
     const zones: ZoneJSON[] = shapes
-      .filter((s) => s.type === 'zone')
+      .filter((s) => s.type === "zone")
       .map((zone) => {
         const contained = shapes
           .filter((s) => s.id !== zone.id && Serializer.isWithinBounds(s, zone))
@@ -31,19 +36,23 @@ export class Serializer {
 
         return {
           id: zone.id,
-          label: (zone.data as { label?: string }).label ?? '',
-          bounds: { x: zone.x, y: zone.y, width: zone.width, height: zone.height },
+          label: (zone.data as { label?: string }).label ?? "",
+          bounds: {
+            x: zone.x,
+            y: zone.y,
+            width: zone.width,
+            height: zone.height,
+          },
           shapeIds: contained,
         };
       });
 
     return {
-      version: '0.1.0',
+      version: "0.1.0",
       canvas: {
         width: canvas.stage.width(),
         height: canvas.stage.height(),
         camera: { ...canvas.camera },
-        themeName: 'default',
         gridSize: canvas.theme.canvasGridSize,
       },
       shapes: shapeJsons,
@@ -59,7 +68,7 @@ export class Serializer {
    * @returns Canvas configuration and an array of shape instances.
    */
   static deserialize(doc: CanvasDocument): {
-    canvasConfig: CanvasDocument['canvas'];
+    canvasConfig: CanvasDocument["canvas"];
     shapes: BaseShape[];
   } {
     const shapes: BaseShape[] = [];
@@ -100,7 +109,9 @@ export class Serializer {
     const doc = JSON.parse(json) as CanvasDocument;
     const validation = Serializer.validate(doc);
     if (!validation.valid) {
-      throw new Error(`Invalid CanvasDocument: ${validation.errors.join('; ')}`);
+      throw new Error(
+        `Invalid CanvasDocument: ${validation.errors.join("; ")}`,
+      );
     }
     return doc;
   }
@@ -115,16 +126,16 @@ export class Serializer {
     const errors: string[] = [];
 
     if (!doc.version) {
-      errors.push('Missing version field.');
+      errors.push("Missing version field.");
     }
 
     if (!Array.isArray(doc.shapes)) {
-      errors.push('Missing or invalid shapes array.');
+      errors.push("Missing or invalid shapes array.");
     } else {
       const ids = new Set<string>();
       for (const shape of doc.shapes) {
         if (!shape.id) {
-          errors.push('Shape missing id.');
+          errors.push("Shape missing id.");
         } else if (ids.has(shape.id)) {
           errors.push(`Duplicate shape id: ${shape.id}`);
         } else {
@@ -132,7 +143,7 @@ export class Serializer {
         }
 
         if (!shape.type) {
-          errors.push(`Shape ${shape.id ?? '(unknown)'} missing type.`);
+          errors.push(`Shape ${shape.id ?? "(unknown)"} missing type.`);
         } else if (!ShapeRegistry.get(shape.type)) {
           errors.push(`Unregistered shape type: ${shape.type}`);
         }

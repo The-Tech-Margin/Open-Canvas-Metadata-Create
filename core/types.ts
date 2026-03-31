@@ -3,6 +3,9 @@
  * Shared interfaces and types for @fourcorners/canvas.
  */
 
+import type { ThemeTokens } from "../theme/tokens";
+export type { ThemeTokens };
+
 /** A 2D point in canvas coordinates. */
 export interface Point {
   /** Horizontal position */
@@ -32,10 +35,10 @@ export interface Rect {
 }
 
 /** Categories that classify shape behavior and rendering. */
-export type ShapeCategory = 'media' | 'text' | 'container' | 'annotation';
+export type ShapeCategory = "media" | "text" | "container" | "annotation";
 
 /** The interaction mode of the canvas. */
-export type CanvasMode = 'edit' | 'view' | 'present';
+export type CanvasMode = "edit" | "view" | "present";
 
 /** Camera state controlling the viewport transform. */
 export interface CameraState {
@@ -119,8 +122,6 @@ export interface CanvasDocument {
     height: number;
     /** Camera state at time of serialization */
     camera: CameraState;
-    /** Name of the active theme */
-    themeName: string;
     /** Grid size in pixels */
     gridSize: number;
   };
@@ -142,7 +143,7 @@ export interface FieldDefinition {
   /** Human-readable label */
   label: string;
   /** Input type for the field editor */
-  type: 'text' | 'number' | 'url' | 'textarea' | 'image' | 'audio' | 'select';
+  type: "text" | "number" | "url" | "textarea" | "image" | "audio" | "select";
   /** Options for 'select' type fields */
   options?: string[];
   /** Whether the field must have a value */
@@ -172,49 +173,4 @@ export interface CanvasRenderContext {
   camera: CameraState;
   /** Whether this shape is currently selected */
   selected: boolean;
-}
-
-/**
- * Forward declaration of ThemeTokens.
- * Full definition lives in theme/tokens.ts; re-exported here
- * so core types can reference it without circular imports.
- */
-export interface ThemeTokens {
-  // Surface
-  canvasBg: string;
-  canvasDot: string;
-  canvasDotSize: number;
-  canvasGridSize: number;
-
-  // Shape chrome
-  shapeBorder: string;
-  shapeBorderRadius: number;
-  shapeShadow: string;
-  shapeSelectedBorder: string;
-  shapeHoverBorder: string;
-
-  // Typography
-  fontFamily: string;
-  fontSizeBase: number;
-  fontSizeSmall: number;
-  fontSizeLarge: number;
-  textColor: string;
-  textSecondary: string;
-
-  // Accent
-  accentPrimary: string;
-  accentSecondary: string;
-  accentDanger: string;
-
-  // Interactive
-  handleColor: string;
-  handleSize: number;
-  snapGuideColor: string;
-  selectionRectColor: string;
-
-  // Toolbar
-  toolbarBg: string;
-  toolbarBorder: string;
-  toolbarIconColor: string;
-  toolbarIconActiveColor: string;
 }
