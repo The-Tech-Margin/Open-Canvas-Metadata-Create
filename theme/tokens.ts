@@ -19,6 +19,18 @@ export interface ThemeTokens {
   shapeSelectedBorder: string;
   shapeHoverBorder: string;
 
+  // Shape internals
+  /** Placeholder fill for empty image areas, favicon slots, and thumbnails. */
+  shapePlaceholder: string;
+  /** Surface color for shape card backgrounds (may differ from canvasBg). */
+  shapeSurface: string;
+  /** Badge / overlay text color (e.g. NF label, video duration). */
+  badgeText: string;
+  /** Video player background color. */
+  videoBg: string;
+  /** Semi-transparent overlay for controls on media shapes. */
+  overlayBg: string;
+
   // Typography
   fontFamily: string;
   fontSizeBase: number;
@@ -59,6 +71,13 @@ export const DEFAULT_TOKENS: ThemeTokens = {
   shapeShadow: "0 1px 3px rgba(0,0,0,0.1)",
   shapeSelectedBorder: "#2563eb",
   shapeHoverBorder: "#93c5fd",
+
+  // Shape internals
+  shapePlaceholder: "#e2e8f0",
+  shapeSurface: "#ffffff",
+  badgeText: "#ffffff",
+  videoBg: "#1a1a2e",
+  overlayBg: "rgba(0,0,0,0.5)",
 
   // Typography
   fontFamily:

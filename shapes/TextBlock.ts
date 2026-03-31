@@ -109,7 +109,8 @@ export class TextBlock extends BaseShape<TextBlockData> {
   }
 
   /** @inheritdoc */
-  renderThumbnail(): Konva.Text {
+  /** @inheritdoc */
+  renderThumbnail(ctx?: CanvasRenderContext): Konva.Text {
     return new Konva.Text({
       x: this.x,
       y: this.y,
@@ -117,7 +118,7 @@ export class TextBlock extends BaseShape<TextBlockData> {
       height: this.height,
       text: this.data.content,
       fontSize: 10,
-      fill: "#64748b",
+      fill: ctx?.theme.textSecondary ?? "#64748b",
       wrap: "word",
     });
   }

@@ -129,13 +129,13 @@ export class ZoneShape extends BaseShape<ZoneData> {
   }
 
   /** @inheritdoc */
-  renderThumbnail(): Konva.Rect {
+  renderThumbnail(ctx?: CanvasRenderContext): Konva.Rect {
     return new Konva.Rect({
       x: this.x,
       y: this.y,
       width: this.width,
       height: this.height,
-      stroke: this.data.color ?? "#cbd5e1",
+      stroke: this.data.color ?? ctx?.theme.shapeBorder ?? "#cbd5e1",
       strokeWidth: 1,
       dash: [4, 2],
       cornerRadius: 4,

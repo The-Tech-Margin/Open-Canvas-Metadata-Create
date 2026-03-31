@@ -68,7 +68,7 @@ export class VoiceNote extends BaseShape<VoiceNoteData> {
       new Konva.Rect({
         width: this.width,
         height: this.height,
-        fill: ctx.theme.canvasBg,
+        fill: ctx.theme.shapeSurface,
         cornerRadius: ctx.theme.shapeBorderRadius,
         stroke: borderColor,
         strokeWidth: ctx.selected ? 2 : 1,
@@ -167,13 +167,14 @@ export class VoiceNote extends BaseShape<VoiceNoteData> {
   }
 
   /** @inheritdoc */
-  renderThumbnail(): Konva.Rect {
+  /** @inheritdoc */
+  renderThumbnail(ctx?: CanvasRenderContext): Konva.Rect {
     return new Konva.Rect({
       x: this.x,
       y: this.y,
       width: this.width,
       height: this.height,
-      fill: '#e2e8f0',
+      fill: ctx?.theme.shapePlaceholder ?? '#e2e8f0',
       cornerRadius: 4,
     });
   }

@@ -20,6 +20,13 @@ export const darkTheme: ThemeTokens = {
   shapeSelectedBorder: "#3b82f6",
   shapeHoverBorder: "#60a5fa",
 
+  // Shape internals
+  shapePlaceholder: "#334155",
+  shapeSurface: "#1e293b",
+  badgeText: "#ffffff",
+  videoBg: "#0f172a",
+  overlayBg: "rgba(0,0,0,0.6)",
+
   // Typography
   fontFamily:
     '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',

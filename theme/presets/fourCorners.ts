@@ -22,6 +22,13 @@ export const fourCornersTheme: ThemeTokens = {
   shapeSelectedBorder: "var(--fc-accent, #2563eb)",
   shapeHoverBorder: "var(--fc-hover, #93c5fd)",
 
+  // Shape internals
+  shapePlaceholder: "var(--fc-placeholder, #e2e8f0)",
+  shapeSurface: "var(--fc-surface, #ffffff)",
+  badgeText: "var(--fc-badge-text, #ffffff)",
+  videoBg: "var(--fc-video-bg, #1a1a2e)",
+  overlayBg: "var(--fc-overlay-bg, rgba(0,0,0,0.5))",
+
   // Typography
   fontFamily:
     'var(--fc-font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif)',

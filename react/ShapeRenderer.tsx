@@ -1,9 +1,14 @@
 /**
  * @module react/ShapeRenderer
  * Maps a BaseShape instance to Konva nodes, with optional HTML overlay.
+ *
+ * shape.render() returns imperative Konva nodes (e.g. Konva.Group),
+ * which cannot be passed as React children to react-konva's declarative
+ * components. Instead we attach them to a react-konva <Group> via a ref.
  */
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
+import Konva from "konva";
 import { Group } from "react-konva";
 import { Html } from "react-konva-utils";
 import type { BaseShape } from "../shapes/BaseShape";
@@ -30,8 +35,11 @@ export interface ShapeRendererProps {
 
 /**
  * Renders a single shape as Konva nodes.
- * If the shape implements `renderOverlay()`, wraps the overlay
- * in an Html component from react-konva-utils positioned at the shape's location.
+ *
+ * shape.render() returns imperative Konva nodes which are added to a
+ * react-konva Group via a ref. If the shape implements renderOverlay(),
+ * the overlay is rendered as an Html component positioned at the shape's
+ * location.
  */
 export function ShapeRenderer({
   shape,
@@ -40,12 +48,25 @@ export function ShapeRenderer({
   camera,
   selected = false,
 }: ShapeRendererProps) {
+  const groupRef = useRef<Konva.Group>(null);
+
   const ctx: CanvasRenderContext = useMemo(
     () => ({ theme, mode, camera, selected }),
     [theme, mode, camera, selected],
   );
 
-  const konvaNodes = useMemo(() => shape.render(ctx), [shape, ctx]);
+  // Attach imperative Konva nodes from shape.render() to the Group ref
+  useEffect(() => {
+    const group = groupRef.current;
+    if (!group) return;
+
+    group.destroyChildren();
+    const node = shape.render(ctx);
+    if (node) {
+      group.add(node);
+    }
+    group.getLayer()?.batchDraw();
+  }, [shape, ctx]);
 
   const overlay = useMemo(() => {
     if (shape.renderOverlay) {
@@ -55,23 +76,25 @@ export function ShapeRenderer({
   }, [shape, mode]);
 
   return (
-    <Group>
-      {konvaNodes}
+    <>
+      <Group ref={groupRef} />
       {overlay && (
-        <Html
-          groupProps={{
-            x: shape.x,
-            y: shape.y,
-          }}
-          divProps={{
-            style: {
-              pointerEvents: mode === "edit" ? "none" : "auto",
-            },
-          }}
-        >
-          {overlay as React.ReactElement}
-        </Html>
+        <Group>
+          <Html
+            groupProps={{
+              x: shape.x,
+              y: shape.y,
+            }}
+            divProps={{
+              style: {
+                pointerEvents: mode === "edit" ? "none" : "auto",
+              },
+            }}
+          >
+            {overlay as React.ReactElement}
+          </Html>
+        </Group>
       )}
-    </Group>
+    </>
   );
 }

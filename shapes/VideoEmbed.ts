@@ -68,7 +68,7 @@ export class VideoEmbed extends BaseShape<VideoData> {
       new Konva.Rect({
         width: this.width,
         height: this.height,
-        fill: '#1a1a2e',
+        fill: ctx.theme.videoBg,
         cornerRadius: ctx.theme.shapeBorderRadius,
         stroke: borderColor,
         strokeWidth: ctx.selected ? 2 : 1,
@@ -86,7 +86,7 @@ export class VideoEmbed extends BaseShape<VideoData> {
           x: cx,
           y: cy,
           radius: triRadius + 8,
-          fill: 'rgba(0,0,0,0.5)',
+          fill: ctx.theme.overlayBg,
         })
       );
 
@@ -96,7 +96,7 @@ export class VideoEmbed extends BaseShape<VideoData> {
           y: cy,
           sides: 3,
           radius: triRadius,
-          fill: '#ffffff',
+          fill: ctx.theme.badgeText,
           rotation: 90,
         })
       );
@@ -114,7 +114,7 @@ export class VideoEmbed extends BaseShape<VideoData> {
           y: this.height - 26,
           width: 48,
           height: 20,
-          fill: 'rgba(0,0,0,0.7)',
+          fill: ctx.theme.overlayBg,
           cornerRadius: 4,
         })
       );
@@ -128,7 +128,7 @@ export class VideoEmbed extends BaseShape<VideoData> {
           text: label,
           fontSize: 12,
           fontFamily: ctx.theme.fontFamily,
-          fill: '#ffffff',
+          fill: ctx.theme.badgeText,
           align: 'center',
           verticalAlign: 'middle',
         })
@@ -163,13 +163,14 @@ export class VideoEmbed extends BaseShape<VideoData> {
   }
 
   /** @inheritdoc */
-  renderThumbnail(): Konva.Rect {
+  /** @inheritdoc */
+  renderThumbnail(ctx?: CanvasRenderContext): Konva.Rect {
     return new Konva.Rect({
       x: this.x,
       y: this.y,
       width: this.width,
       height: this.height,
-      fill: '#1a1a2e',
+      fill: ctx?.theme.videoBg ?? '#1a1a2e',
       cornerRadius: 4,
     });
   }
