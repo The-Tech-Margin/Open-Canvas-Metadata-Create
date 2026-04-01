@@ -8,3 +8,7 @@ export { useMode } from "./useMode";
 export type { UseModeReturn } from "./useMode";
 export { useBridge } from "./useBridge";
 export type { BridgeConfig, UseBridgeReturn } from "./useBridge";
+export { useSelection } from "./useSelection";
+export type { UseSelectionReturn } from "./useSelection";
+export { useHistory } from "./useHistory";
+export type { UseHistoryReturn } from "./useHistory";
