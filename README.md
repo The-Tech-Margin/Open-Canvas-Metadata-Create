@@ -41,16 +41,72 @@ npm install @fourcorners/canvas konva react-konva react-konva-utils
 ```
 
 ```tsx
-import { CanvasProvider, CanvasView } from '@fourcorners/canvas/react';
+import { CanvasProvider, CanvasView, useShapes } from '@fourcorners/canvas/react';
 import { fourCornersTheme } from '@fourcorners/canvas/theme';
 
-function Editor() {
+function Editor({ shapes }) {
   return (
     <CanvasProvider theme={fourCornersTheme}>
-      <CanvasView mode="edit" />
+      <CanvasView shapes={shapes} mode="edit" />
     </CanvasProvider>
   );
 }
+```
+
+That's it. CanvasView includes all interactions out of the box.
+
+## Built-in behaviors
+
+CanvasView provides these interactions automatically:
+
+| Behavior | Input | Mode |
+|---|---|---|
+| **Zoom** | Mouse wheel / pinch | All |
+| **Pan** | Drag the canvas | All |
+| **Select** | Click a shape | Edit |
+| **Multi-select** | Shift/Cmd+click | Edit |
+| **Drag shapes** | Drag a shape (with snap) | Edit |
+| **Transform** | Resize/rotate handles | Edit |
+| **Context menu** | Right-click / long-press | All |
+| **Undo** | Cmd/Ctrl+Z | Edit |
+| **Redo** | Cmd/Ctrl+Shift+Z | Edit |
+| **Delete** | Delete/Backspace key | Edit |
+| **Deselect** | Escape / click empty area | Edit |
+
+### Hooks
+
+```tsx
+import {
+  useCamera,      // { camera, setCamera, zoomIn, zoomOut, fitToContent, resetView }
+  useSelection,   // { selectedIds, select, addToSelection, deselect, deselectAll, isSelected }
+  useHistory,     // { undo, redo, canUndo, canRedo, push, history }
+  useShapes,      // { shapes, add, remove, update, get, clear, setShapes }
+  useMode,        // { mode, setMode }
+  useBridge,      // { sync, load, isDirty, isSaving, lastSaved }
+} from '@fourcorners/canvas/react';
+```
+
+### Opting out
+
+Disable any built-in behavior with props:
+
+```tsx
+<CanvasView
+  shapes={shapes}
+  disableWheelZoom       // handle zoom yourself
+  disableStageDrag       // handle panning yourself
+  disableKeyboardShortcuts  // handle shortcuts yourself
+/>
+```
+
+### Event callbacks
+
+```tsx
+<CanvasView
+  shapes={shapes}
+  onShapeDelete={(id) => removeShape(id)}  // Delete key or context menu
+  onShapeEdit={(id) => openEditor(id)}     // Double-click / context menu Edit
+/>
 ```
 
 ### Register a custom shape
@@ -74,10 +130,10 @@ ShapeRegistry.register(EvidenceMarker);
 ```tsx
 import { useBridge } from '@fourcorners/canvas/react';
 
-const { shapes, sync } = useBridge({
-  store: useMyStore,
+const { sync, load, isDirty } = useBridge({
   toExternal: canvasToFourCorners,
   fromExternal: fourCornersToCanvas,
+  onSave: async (data) => await fetch('/api/save', { body: JSON.stringify(data) }),
   autoSave: true,
   debounceMs: 1000,
 });
@@ -85,15 +141,31 @@ const { shapes, sync } = useBridge({
 
 ## Theme system
 
-All visual properties are CSS-variable-driven. No hardcoded hex values.
+All visual properties are token-driven. No hardcoded hex values in shapes.
 
 ```tsx
 <CanvasProvider theme={darkTheme}>
-  <CanvasView mode="edit" />
+  <CanvasView shapes={shapes} mode="edit" />
 </CanvasProvider>
 ```
 
-The Four Corners preset maps `var(--fc-*)` tokens so existing app styles carry through.
+The Four Corners preset maps `var(--fc-*)` tokens so the consuming app's CSS variables cascade through:
+
+```css
+/* In your app — these flow into all canvas shapes */
+:root {
+  --fc-bg: #0f172a;
+  --fc-surface: #1e293b;
+  --fc-text: #f1f5f9;
+  --fc-accent: #3b82f6;
+  --fc-placeholder: #334155;
+  --fc-video-bg: #0f172a;
+  --fc-badge-text: #ffffff;
+  --fc-overlay-bg: rgba(0,0,0,0.6);
+}
+```
+
+Available theme tokens: `canvasBg`, `shapeBorder`, `shapeSurface`, `shapePlaceholder`, `badgeText`, `videoBg`, `overlayBg`, `fontFamily`, `textColor`, `textSecondary`, `accentPrimary`, `toolbarBg`, and more. See `theme/tokens.ts` for the full interface.
 
 ## Mobile
 
@@ -138,7 +210,7 @@ The preview data comes from `test-data/rockaway-beach.json`, mapped through `tes
 npm run build        # Production build via tsup
 npm run dev          # Watch mode
 npm run typecheck    # Type checking only
-npm run test         # Vitest (32 tests)
+npm run test         # Vitest (54 tests)
 npm run preview      # Interactive preview page
 npm run storybook    # Component development
 ```
